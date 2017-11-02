@@ -539,6 +539,7 @@ float city::f(std::vector<int> casilla, std::vector<int> objetivo, int formula) 
 
 std::vector<int> city::encontrar_camino(std::vector<int> objetivo) {
 	std::set<recorrido> lista;
+	std::set<recorrido> l_cerrada;
 	recorrido aux;
 	aux.add(x_car, y_car);
 	lista.insert(aux);
@@ -546,14 +547,15 @@ std::vector<int> city::encontrar_camino(std::vector<int> objetivo) {
 	while((lista.begin()->get_end() != objetivo) && (!lista.empty())) {
 		aux = *lista.begin();
 		lista.erase(lista.begin());
+		l_cerrada.insert(aux);
 		if(mapa[aux.get_end()[0] - 1][aux.get_end()[1]] && !aux.existe(aux.get_end()[0] - 1, aux.get_end()[1]))
-			lista.insert(aux.create(aux.get_end()[0] - 1, aux.get_end()[1]));
+			insert_check(lista, l_cerrada, aux.create(aux.get_end()[0] - 1, aux.get_end()[1]));
 		if(mapa[aux.get_end()[0] + 1][aux.get_end()[1]] && !aux.existe(aux.get_end()[0] + 1, aux.get_end()[1]))
-			lista.insert(aux.create(aux.get_end()[0] + 1, aux.get_end()[1]));
+			insert_check(lista, l_cerrada, aux.create(aux.get_end()[0] + 1, aux.get_end()[1]));
 		if(mapa[aux.get_end()[0]][aux.get_end()[1] - 1] && !aux.existe(aux.get_end()[0], aux.get_end()[1] - 1))
-			lista.insert(aux.create(aux.get_end()[0], aux.get_end()[1] - 1));
+			insert_check(lista, l_cerrada, aux.create(aux.get_end()[0], aux.get_end()[1] - 1));
 		if(mapa[aux.get_end()[0]][aux.get_end()[1] + 1] && !aux.existe(aux.get_end()[0], aux.get_end()[1] + 1))
-			lista.insert(aux.create(aux.get_end()[0], aux.get_end()[1] + 1));
+			insert_check(lista, l_cerrada, aux.create(aux.get_end()[0], aux.get_end()[1] + 1));
 	}
 	
 	if(lista.empty()) std::cout << "ALGO VA MAL, LAS POSIBILIDADES DEBEN ESTAR EN EL MAPA" << std::endl;
@@ -562,7 +564,40 @@ std::vector<int> city::encontrar_camino(std::vector<int> objetivo) {
 }
 
 
+void city::insert_check(std::set<recorrido>& lista, std::set<recorrido>& l_cerrada, recorrido rec) {
+	std::set<recorrido>::iterator it = l_cerrada.begin();
+	bool found = false;
+	while((it != l_cerrada.end()) && !found) {
+		if(rec.get_end() == it->get_end()) {
+			found = true;
+			if(rec.get_coste() < it->get_coste()) {
+				l_cerrada.erase(*it);
+				lista.insert(rec);
+			}
+		}
+		it++;
+	}
 
+	// si no estaba en la lista cerrada se comprueba en la abierta
+	// si estaba en la cerrada y era mejor ya se insertó, si no lo era no hay que hacer nada más
+	if(!found) {
+		it = lista.begin();
+		while((it != lista.end()) && !found) {
+			if(rec.get_end() == it->get_end()) {
+				found = true;
+				if(rec.get_coste() < it->get_coste()) {
+					lista.erase(*it);
+					lista.insert(rec);
+				}
+			}
+			it++;
+		}
+	}
+	
+	if(!found)		//si tampoco se encontró en la lista abierta se inserta sin más
+		lista.insert(rec);
+	
+}
 
 
 

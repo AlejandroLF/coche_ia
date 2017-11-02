@@ -5,6 +5,11 @@ recorrido::recorrido() {
 }
 
 
+int recorrido::get_coste() const {
+	return Coste;
+}
+
+
 std::vector<int> recorrido::get_first() const {
 	return Camino[1];
 }

@@ -77,6 +77,7 @@ public:
 
 	float f(std::vector<int>, std::vector<int>, int);
 	std::vector<int> encontrar_camino(std::vector<int>);
+	void insert_check(std::set<recorrido>&, std::set<recorrido>&, recorrido);
 };
 
 

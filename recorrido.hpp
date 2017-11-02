@@ -11,6 +11,7 @@ class recorrido {
 public:
 
 	recorrido();
+	int get_coste() const;
 	std::vector<int> get_first() const;
 	std::vector<int> get_end() const;
 	void add(int, int);
