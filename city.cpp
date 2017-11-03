@@ -2,7 +2,7 @@
 
 
 city::city(){
-	srand(time(NULL));
+	srand(77);
 	int x, y;
 	std::string f;
 	std::cout<<"Filas: ";
@@ -351,7 +351,12 @@ void city::move(){
 
 
 void city::auto_move(){
+	
+	double t;
+	t = clock();
+
 	n_movimientos = 0;
+
 	
 	mapa.resize(x_+2);
 	for(int i = 0; i < x_+2; i++) {
@@ -388,32 +393,6 @@ void city::auto_move(){
 			case 's':x_tem+=1;break;
 			case 'd':y_tem+=1;break;
 
-			case 'i':
-				if(x_mo>0){
-					x_mo--;
-					x_mm--;
-				}
-				break;
-
-			case 'j':
-				if(y_mo>0){
-					y_mo--;
-					y_mm--;
-				}
-				break;
-			case 'k':
-				if(x_mm<x_){
-					x_mo++;
-					x_mm++;
-				}
-				break;
-			case 'l':
-				if(y_mm<y_){
-					y_mo++;
-					y_mm++;
-				}
-				break;
-
 			case 'n': nosalir=false;
 		}
 		mov='e';
@@ -440,11 +419,13 @@ void city::auto_move(){
 
 	} while(nollego & nosalir);
 	
+	t = clock() - t;
 
 	if(!nollego)std::cout<<col[4]<<"GANASTE\n\tGANASTE\n\t\tGANASTE\n\t\t\tGANASTE\n\t\t\t\tGANASTE\n"<<RST;
 	else std::cout<<"No se puede llegar al destino\n";
 	
 	std::cout << col[0] << "Número de movimientos: " << n_movimientos << RST << '\n';
+	std::cout << "El algoritmo tardó: " << 	t / (double) CLOCKS_PER_SEC << " segundos\n";
 }
 
 
