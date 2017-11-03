@@ -50,6 +50,7 @@ class city{
 
 	std::vector<std::vector<bool> > mapa;
 	std::vector<std::vector<int> > posibilidades;
+	
 
 	std::vector<std::string> col={KGRN,     KWHT,     KRED,          KBLU,     KYEL,	KSYEL};
 	//							  lados  -  fondo  -  obstaculos  -  coche  -  final -  excavadora
@@ -73,7 +74,7 @@ public:
 
 	void move();
 	void auto_move();
-	char get_next_move();
+	char get_next_move(std::vector<int>&);
 
 	float f(std::vector<int>, std::vector<int>, int);
 	std::vector<int> encontrar_camino(std::vector<int>);

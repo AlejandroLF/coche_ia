@@ -2,7 +2,7 @@
 
 
 city::city(){
-	srand(77);
+	srand(time(NULL));
 	int x, y;
 	std::string f;
 	std::cout<<"Filas: ";
@@ -365,6 +365,8 @@ void city::auto_move(){
 			mapa[i][j] = false;
 	}
 	mapa[x_car][y_car] = true;
+	std::vector<int> pos_objetivo;
+	pos_objetivo = {x_car, y_car};
 
 	bool nollego=true;
 	bool nosalir=true;
@@ -372,17 +374,17 @@ void city::auto_move(){
 	mov='e';
 	int x_tem,y_tem;
 	do {
-		if(metropolis)imprimir_metropolis();
-		else imprimir();
+		//if(metropolis)imprimir_metropolis();
+		//else imprimir();
 
 		x_tem=x_car;
 		y_tem=y_car;
 
 
-		usleep(90000);
-		//std::cin >> mov;
+		//usleep(90000);
+		
 
-		mov=get_next_move();
+		mov=get_next_move(pos_objetivo);
 		if(mov != 'n')
 			n_movimientos++;
 
@@ -429,10 +431,12 @@ void city::auto_move(){
 }
 
 
-char city::get_next_move() {
+char city::get_next_move(std::vector<int>& pos_objetivo) {
 	char move;
 	std::vector<int> aux, victoria = {x_v, y_v}, car = {x_car, y_car};
 	std::vector<std::vector<int> > opciones, opciones_aux;
+	
+	//if(car == pos_objetivo) en_camino = false;
 
 	if((get_val(x_car-1, y_car) == 1) || (get_val(x_car-1, y_car) == 4)) {
 		aux = {x_car-1, y_car};
@@ -472,14 +476,17 @@ char city::get_next_move() {
 
 
 	if(!posibilidades.empty()) {
-		float min = INFINITY;
-		int elegida = 0;
-		for(int i = 0; i < posibilidades.size(); i++)
-			if(f(posibilidades[i], victoria, f_) + f(car, posibilidades[i], f_)/2 < min) {
-				min = f(posibilidades[i], victoria, f_) + f(car, posibilidades[i], f_)/2;
-				elegida = i;
-			}
-		aux = encontrar_camino(posibilidades[elegida]);
+		if(car == pos_objetivo) {
+			float min = INFINITY;
+			int elegida = 0;
+			for(int i = 0; i < posibilidades.size(); i++)
+				if(f(posibilidades[i], victoria, f_) + f(car, posibilidades[i], f_)/2 < min) {
+					min = f(posibilidades[i], victoria, f_) + f(car, posibilidades[i], f_)/2;
+					elegida = i;
+				}
+			pos_objetivo = posibilidades[elegida];
+		}
+		aux = encontrar_camino(pos_objetivo);
 		
 		if(aux[0] == x_car) {
 			if(aux[1] == y_car-1)
